@@ -15,9 +15,9 @@ const router =createRouter({
                     component:() => import(/* webpackChunkName: "login" */ "@/views/Home/index.vue"),
                 },
                 {
-                    path:'category', 
+                    path:'category/:id', 
                     name:"Category",
-                    component:() => import(/* webpackChunkName: "login" */ "@/views/Category/index.vue"),
+                    component:() => import(/* webpackChunkName: "category" */ "@/views/Category/index.vue"),
                 }
             ]
         },

@@ -1,9 +1,13 @@
 import httpInstance from "@/utils/http"
 
-export function getHomeAPI() {
+export function getHomeAPI(params={}) {
+    // 默认为1 商品为2
+    const {distributionSite='1'}=params
     return httpInstance({
         url: 'home/banner',
-        method: 'GET',
+        params:{
+            distributionSite,
+        }
     })
 }
 
