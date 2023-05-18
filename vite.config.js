@@ -17,6 +17,15 @@ export default defineConfig({
       resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
     }),
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://pcapi-xiaotuxian-front-devtest.itheima.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
   resolve: {
     // 实际路径转化 @ -> src
     alias: {
