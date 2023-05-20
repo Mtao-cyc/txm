@@ -18,6 +18,11 @@ const router =createRouter({
                     path:'category/:id', 
                     name:"Category",
                     component:() => import(/* webpackChunkName: "category" */ "@/views/Category/index.vue"),
+                },
+                {
+                    path:'category/sub/:id', 
+                    name:"SubCategory",
+                    component:() => import(/* webpackChunkName: "SubCategory" */ "@/views/SubCategory/index.vue"),
                 }
             ]
         },

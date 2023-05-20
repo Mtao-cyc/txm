@@ -1,26 +1,8 @@
 <script setup>
-import { getCategoryAPI } from "@/apis/category";
-import { getHomeAPI } from "@/apis/home"
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router"
-const route = useRoute()
-
-const categoryData = ref({})
-const bannerList = ref([])
-
-const getCategoryData = async () => {
-   const res = await getCategoryAPI(route.params.id)
-   console.log(res);
-   categoryData.value = res.result
-}
-const getBanner = async () => {
-   const res = await getHomeAPI({ distributionSite: '2' });
-   bannerList.value = res.result
-}
-
-onMounted(() => getCategoryData())
-onMounted(() => getBanner())
-
+import {useBanner} from "./composables/useBanner"
+import {useCategory} from "./composables/useCategory"
+const {bannerList} =useBanner()
+const {categoryData} =useCategory()
 
 
 </script>
@@ -39,7 +21,7 @@ onMounted(() => getBanner())
          <div class="home-banner">
             <el-carousel height="500px">
                <el-carousel-item v-for="item in bannerList" :key="item.id">
-                  <img :src="item.imgUrl" alt="">
+                  <img v-img-lazy="item.imgUrl" alt="">
                </el-carousel-item>
             </el-carousel>
          </div>
@@ -48,8 +30,8 @@ onMounted(() => getBanner())
             <h3>全部分类</h3>
             <ul>
                <li v-for="i in categoryData.children" :key="i.id">
-                  <RouterLink to="/">
-                     <img :src="i.picture" />
+                  <RouterLink :to="`/category/sub/${i.id}`">
+                     <img v-img-lazy="i.picture" />
                      <p>{{ i.name }}</p>
                   </RouterLink>
                </li>

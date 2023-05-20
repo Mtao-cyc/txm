@@ -16,6 +16,6 @@ onMounted(()=> CategoryStore.getCategory())
     <LayoutFixed/>
     <LayoutNav/>
     <LayoutHeader/>
-    <RouterView/>
+    <RouterView/> 
     <LayoutFooter/>
 </template>
