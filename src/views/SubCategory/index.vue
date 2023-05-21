@@ -1,4 +1,52 @@
 <script setup>
+import { getCategoryFilterAPI, getSubCategoryAPI } from "@/apis/category"
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import GoodsItem from '@/components/Home/GoodsItem.vue';
+
+// 获取面包屑导航数据
+const route = useRoute()
+const categoryData = ref([])
+const getCategoryData = async () => {
+  let res = await getCategoryFilterAPI(route.params.id);
+  categoryData.value = res.result
+}
+onMounted(() => getCategoryData())
+
+// 获取基础列表数据
+const goodsList = ref([])
+// 'publishTime' | 'orderNum' | 'evaluateNum'
+const reqDate = ref({
+  categoryId: route.params.id,
+  page: 1,
+  pageSize: 20,
+  sortField: 'publishTime'
+})
+const getGoodsList = async () => {
+  let res = await getSubCategoryAPI(reqDate.value)
+  goodsList.value = res.result.items
+}
+onMounted(() => getGoodsList())
+
+// tab切换回调
+const handleChangeTab = () => {
+  reqDate.value.page = 1
+  console.log(reqDate.value);
+  getGoodsList()
+}
+
+// 加载更多
+const disabled = ref(false)
+const load = async () => {
+  reqDate.value.page++
+  let res = await getSubCategoryAPI(reqDate.value)
+  goodsList.value = [...goodsList.value, ...res.result.items]
+  if (res.result.items.length === 0) {
+    disabled.value = true
+  }
+
+
+}
 
 
 </script>
@@ -9,23 +57,23 @@
     <div class="bread-container">
       <el-breadcrumb separator=">">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/' }">居家
+        <el-breadcrumb-item :to="{ path: `/category/${categoryData.parentId}` }">{{ categoryData.parentName }}
         </el-breadcrumb-item>
-        <el-breadcrumb-item>居家生活用品</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ categoryData.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="sub-container">
-      <el-tabs>
+      <el-tabs v-model="reqDate.sortField" @tab-change="handleChangeTab">
         <el-tab-pane label="最新商品" name="publishTime"></el-tab-pane>
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
-         <!-- 商品列表-->
+      <div class="body" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
+        <!-- 商品列表-->
+        <GoodsItem v-for="goods in goodsList" :goods="goods" :key="goods.id" />
       </div>
     </div>
   </div>
-
 </template>
 
 

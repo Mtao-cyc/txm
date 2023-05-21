@@ -12,6 +12,7 @@ export function useCategory() {
     })
     const getCategoryData = async (id = route.params.id) => {
         const res = await getCategoryAPI(id)
+        console.log(res);
         categoryData.value = res.result
     }
 
